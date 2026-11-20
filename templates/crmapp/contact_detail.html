@@ -1,0 +1,30 @@
+{% extends "crmapp/base.html" %}
+
+{% block title %}{{ contact.first_name }} {{ contact.last_name }}{% endblock %}
+
+{% block content %}
+<h2>{{ contact.first_name }} {{ contact.last_name }}</h2>
+<p><strong>Company:</strong> {{ contact.company.name|default:"-" }}</p>
+<p><strong>Email:</strong> {{ contact.email|default:"-" }}</p>
+<p><strong>Phone:</strong> {{ contact.phone|default:"-" }}</p>
+<p><strong>Role:</strong> {{ contact.role|default:"-" }}</p>
+
+<h4>Opportunities</h4>
+{% if opportunities %}
+<table class="table">
+    <thead><tr><th>Name</th><th>Stage</th><th>Value</th><th>Expected Close</th></tr></thead>
+    <tbody>
+        {% for o in opportunities %}
+        <tr>
+            <td><a href="{% url 'crmapp:opportunity_detail' o.pk %}">{{ o.name }}</a></td>
+            <td>{{ o.stage.name }}</td>
+            <td>${{ o.value }}</td>
+            <td>{{ o.expected_close_date|date:"M d Y"|default:"-" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No opportunities.</p>
+{% endif %}
+{% endblock %}

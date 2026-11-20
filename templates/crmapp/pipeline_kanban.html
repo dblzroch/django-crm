@@ -1,0 +1,65 @@
+{% extends "crmapp/base.html" %}
+
+{% block title %}Pipeline Kanban{% endblock %}
+
+{% block content %}
+<h2>Sales Pipeline Kanban</h2>
+<p class="text-muted">
+    Total Pipeline: <strong>${{ total_pipeline|floatformat:0 }}</strong> |
+    Weighted: <strong>${{ weighted_total|floatformat:0 }}</strong>
+</p>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
+    {% for column in kanban %}
+    <div class="col">
+        <div class="card kanban-column border-{{ column.stage.color }}">
+            <div class="card-header bg-{{ column.stage.color }} text-white">
+                <h6 class="mb-0">{{ column.stage.name }}
+                    <span class="badge bg-light text-dark float-end">{{ column.opportunities.count }}</span>
+                    {% if column.stage.is_closed_won %}<span class="badge bg-success">Won</span>{% endif %}
+                    {% if column.stage.is_closed_lost %}<span class="bg-danger">Lost</span>{% endif %}
+                </h6>
+                <small class="stage-weight">Probability: {{ column.stage.probability }}%</small>
+            </div>
+            <div class="card-body p-2">
+                {% for opp in column.opportunities %}
+                <div class="card opportunity-card mb-2 p-2 border-{{ column.stage.color }}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="mb-1">{{ opp.name }}</h6>
+                            <small class="text-muted">${{ opp.value }}</td>
+                            {% if opp.company %} - {{ opp.company.name }}{% endif %}
+                            </small>
+                        </div>
+                        <span class="badge bg-{{ column.stage.color }}">{{ opp.stage.probability }}%</span>
+                    </div>
+                    {% if opp.contact %}<p class="small mb-1">{{ opp.contact.first_name }} {{ opp.contact.last_name }}</p>{% endif %}
+                    <small class="text-muted">Owner: {{ opp.owner.username|default:"-" }}</small>
+                    <small class="text-muted">Close: {{ opp.expected_close_date|date:"M d"|default:"-" }}</small>
+                </div>
+                {% empty %}
+                <div class="text-muted text-center small p-3">Empty</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="mt-4">
+    <form method="post" action="{% url 'crmapp:opportunity_change_stage' 0 %}" id="stageForm">
+        {% csrf_token %}
+        <input type="hidden" name="stage_id" id="stageIdInput">
+        <input type="hidden" name="next" value="{{ request.path }}">
+    </form>
+</div>
+
+<script>
+document.querySelectorAll('.opportunity-card').forEach(card => {
+    card.addEventListener('click', () => {
+        const id = card.closest('[data-opp-id]').dataset.oppId;
+        window.location.href = '{% url 'crmapp:opportunity_detail' 0 %}'.replace('0', id);
+    });
+});
+</script>
+{% endblock %}

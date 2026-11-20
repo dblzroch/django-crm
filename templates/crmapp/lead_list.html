@@ -1,0 +1,36 @@
+{% extends "crmapp/base.html" %}
+
+{% block title %}Leads{% endblock %}
+
+{% block content %}
+<h2>Leads</h2>
+<a href="{% url 'crmapp:lead_create' %}" class="btn btn-primary mb-3">New Lead</a>
+{% if leads %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Company</th>
+            <th>Status</th>
+            <th>Source</th>
+            <th>Owner</th>
+            <th>Created</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for l in leads %}
+        <tr>
+            <td><a href="{% url 'crmapp:lead_detail' l.pk %}">{{ l.name }}</a></td>
+            <td>{{ l.company.name|default:"-" }}</td>
+            <td>{{ l.status }}</td>
+            <td>{{ l.source }}</td>
+            <td>{{ l.owner.username|default:"-" }}</td>
+            <td>{{ l.created_at|date:"M d Y" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No leads yet.</p>
+{% endif %}
+{% endblock %}

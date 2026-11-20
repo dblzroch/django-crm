@@ -1,0 +1,14 @@
+{% extends "crmapp/base.html" %}
+
+{% block title %}{{ lead.name }}{% endblock %}
+
+{% block content %}
+<h2>{{ lead.name }}</h2>
+<p><strong>Status:</strong> {{ lead.status }}</p>
+<p><strong>Source:</strong> {{ lead.source }}</p>
+<p><strong>Company:</strong> {{ lead.company.name|default:"-" }}</p>
+<p><strong>Contact:</strong> {{ contact|default:"-" }}</p>
+<p><strong>Owner:</strong> {{ lead.owner.username|default:"-" }}</p>
+<p><strong>Notes:</strong> {{ lead.notes|default:"-" }}</p>
+<a href="{% url 'crmapp:lead_list' %}" class="btn btn-secondary">Back to Leads</a>
+{% endblock %}

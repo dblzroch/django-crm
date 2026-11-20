@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}CRM{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{% endblock %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        .kanban-column { min-height: 100px; }
+        .opportunity-card { cursor: pointer; transition: transform 0.1s; }
+        .opportunity-card:hover { transform: translateY(-2px); }
+        .stage-weight { font-size: 0.75em; opacity: 0.7; }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'crmapp:dashboard' %}">py-crm</a>
+        <div class="navbar-nav ms-auto">
+            {% if user.is_authenticated %}
+                <a class="nav-link" href="{% url 'crmapp:pipeline_kanban' %}">Pipeline</a>
+                <a class="nav-link" href="{% url 'crmapp:revenue_forecast' %}">Forecast</a>
+                <a class="nav-link" href="{% url 'crmapp:opportunity_list' %}">Opportunities</a>
+                <a class="nav-link" href="{% url 'crmapp:lead_list' %}">Leads</a>
+                <a class="nav-link" href="{% url 'crmapp:company_list' %}">Companies</a>
+                <a class="nav-link" href="{% url 'crmapp:contact_list' %}">Contacts</a>
+                <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a class="nav-link" href="{% url 'login' %}">Login</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

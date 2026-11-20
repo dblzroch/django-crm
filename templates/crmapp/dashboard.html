@@ -1,0 +1,94 @@
+{% extends "crmapp/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>CRM Dashboard</h2>
+<div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4 mb-4">
+    <div class="col">
+        <div class="card text-center bg-primary text-white">
+            <div class="card-body">
+                <h5 class="card-title">Total Opportunities</h5>
+                <p class="display-4">{{ total_opportunities }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-center bg-info text-white">
+            <div class="card-body">
+                <h5 class="card-title">Pipeline Value</h5>
+                <p class="display-4">${{ total_value }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-center bg-success text-white">
+            <div class="card-body">
+                <h5 class="card-title">Weighted Value</h5>
+                <p class="display-4">${{ weighted_value|floatformat:0 }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Open</h5>
+                <p class="display-4 text-primary">{{ open_opps }}</p>
+                <h5 class="card-title">Won</h5>
+                <p class="display-4 text-success">{{ won_opps }}</p>
+                <h5 class="card-title">Lost</h5>
+                <p class="display-4 text-danger">{{ lost_opps }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Recent Activities</h4>
+        {% if recent_activities %}
+        <table class="table table-sm">
+            <thead>
+                <tr><th>Subject</th><th>Type</th><th>Opportunity</th><th>Owner</th><th>Due</th></tr>
+            </thead>
+            <tbody>
+                {% for a in recent_activities %}
+                <tr>
+                    <td>{{ a.subject }}</td>
+                    <td>{{ a.get_type_display }}</td>
+                    <td>{{ a.opportunity.name }}</td>
+                    <td>{{ a.owner.username|default:"-" }}</td>
+                    <td>{{ a.due_date|date:"M d"|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No recent activities.</p>
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        <h4>Upcoming Activities (7 days)</h4>
+        {% if upcoming %}
+        <table class="table table-sm">
+            <thead>
+                <tr><th>Subject</th><th>Type</th><th>Opportunity</th><th>Owner</th><th>Due</th></tr>
+            </thead>
+            <tbody>
+                {% for a in upcoming %}
+                <tr>
+                    <td>{{ a.subject }}</td>
+                    <td>{{ a.get_type_display }}</td>
+                    <td>{{ a.opportunity.name }}</td>
+                    <td>{{ a.owner.username|default:"-" }}</td>
+                    <td>{{ a.due_date|date:"M d" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No upcoming activities.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

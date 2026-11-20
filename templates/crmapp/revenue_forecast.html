@@ -1,0 +1,42 @@
+{% extends "crmapp/base.html" %}
+
+{% block title %}Revenue Forecast{% endblock %}
+
+{% block content %}
+<h2>Revenue Forecast</h2>
+<p class="text-muted">
+    Total Weighted: <strong>${{ total_weighted|floatformat:0 }}</strong> |
+    Total Pipeline: <strong>${{ total_pipeline|floatformat:0 }}</strong>
+</p>
+
+{% if months %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Month</th>
+            <th>Opportunities</th>
+            <th>Pipeline Value</th>
+            <th>Weighted Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for month_key, data in months %}
+        <tr>
+            <td>{{ month_key|date:"F Y" }}</td>
+            <td>{{ data.count }}</td>
+            <td>${{ data.pipeline|floatformat:0 }}</td>
+            <td>${{ data.weighted|floatformat:0 }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td><strong>Total</strong></td>
+            <td></td>
+            <td><strong>${{ total_pipeline|floatformat:0 }}</strong></td>
+            <td><strong>${{ total_weighted|floatformat:0 }}</strong></td>
+        </tr>
+    </tbody>
+</table>
+{% else %}
+<p>No forecast data available. Create opportunities with expected close dates to see forecasts.</p>
+{% endif %}
+{% endblock %}

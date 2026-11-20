@@ -1,0 +1,16 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv sync --dev
+      - run: uv run python manage.py migrate --settings=crm.settings_test
+      - run: uv run ruff check crmapp crm tests manage.py
+      - run: uv run ruff format --check crmapp crm tests manage.py
+      - run: uv run mypy crmapp crm
+      - run: uv run pytest --cov=crmapp --cov=crm --cov-report=term-missing

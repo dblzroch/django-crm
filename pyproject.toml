@@ -1,0 +1,60 @@
+[project]
+name = "django-crm"
+version = "0.1.0"
+description = "CRM with sales pipeline, kanban, activities and revenue forecast"
+requires-python = ">=3.12"
+dependencies = [
+    "Django>=5.0,<6.0",
+    "python-dotenv>=1.0",
+]
+
+[project.scripts]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["crm", "crmapp"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "pytest-django>=4.8",
+    "ruff>=0.8",
+    "mypy>=1.10",
+    "django-stubs>=5.0",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+src = ["crm", "crmapp"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "C4", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_ignores = true
+strict = true
+exclude = ["tests", "manage.py"]
+
+[[tool.mypy.overrides]]
+module = "crmapp.*"
+disable_error_code = ["var-annotated", "no-untyped-def", "no-untyped-call", "no-any-return", "type-arg"]
+
+[[tool.mypy.overrides]]
+module = "crm.*"
+disable_error_code = ["var-annotated", "no-untyped-def", "no-untyped-call", "no-any-return"]
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disable_error_code = ["var-annotated", "no-untyped-def", "no-untyped-call", "no-any-return", "type-arg"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+DJANGO_SETTINGS_MODULE = "crm.settings"
+addopts = "-q --cov=crmapp --cov=crm --cov-report=term-missing --cov-fail-under=80"
